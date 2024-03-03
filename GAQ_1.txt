@@ -1,0 +1,10 @@
+# 
+# computed by Jin Kosaka and Hirotake Kurihara 
+# using gap 4.12.2 
+# 
+GAQ_1 :=
+[
+# No.1
+[ [ 1 ] ],
+]; 
+### end of file ###
