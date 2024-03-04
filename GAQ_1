@@ -1,0 +1,16 @@
+# 
+# computed by Jin Kosaka and Hirotake Kurihara 
+# using gap 4.12.2 
+# 
+GAQ_1 :=
+[
+# No.1
+rec(
+  G := Group( () ),
+  isConnected := true,
+  matrix := [ [ 1 ] ],
+  ordFix := 1,
+  ordf := 1,
+  psi := GroupHomomorphismByImages( Group( () ), Group( () ), [  ], [  ] ) ),
+]; 
+### end of file ###

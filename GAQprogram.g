@@ -113,7 +113,7 @@ AllGaq := function(n)
 
   for Q in AlexanderQuandleList(n) do
     Q.isAlex := true;
-    if Q.G=Q.P then
+    if IdGroup(Q.G)=IdGroup(Q.P) then
         Q.isConnected:=true;
     fi;
     Q.id := id; 
@@ -126,8 +126,8 @@ AllGaq := function(n)
     for CC in ConjugacyClasses(AutG) do
       psi := Representative(CC);
       gaq := GeneralizedAlexanderQuandle(G,psi);
-      if gaq.G=gaq.P then
-        gaq.IsConnected:=true;
+      if IdGroup(gaq.G)=IdGroup(gaq.P) then
+        gaq.isConnected:=true;
       fi;
       gaq.id := id; 
       id := id + 1;
@@ -443,7 +443,7 @@ PrintTo(file);
 AppendTo(file, "n,#GAQ,#AQ,#Connected","\n");
 
 for n in [1..10] do
-    file_n := JoinStringsWithSeparator(["GAQ_",n,".txt"],"");
+    file_n := JoinStringsWithSeparator(["GAQ_",n],"");
     PrintTo(file_n);
     AppendTo(file_n, "# \n# computed by Jin Kosaka and Hirotake Kurihara \n# using gap 4.12.2 \n# \nGAQ_",n," :=\n[\n" );
 
@@ -455,8 +455,24 @@ for n in [1..10] do
     for i in [1..Size(IsomClasses_ord)] do
       Qrep:=GaqList_ord[(IsomClasses_ord[i])[1]];
       
-      AppendTo(file_n, "# No.",i,"\n",(Qrep.Q).matrix,",\n");
-      # AppendTo(file_n, "# No.",i,"\n",Qrep,",\n");
+      # Express G and psi as in a permutation group
+      isom1:=IsomorphismPermGroup(Qrep.G);
+      G1:=Image(isom1);
+      isom2:=SmallerDegreePermutationRepresentation(G1);
+      G2:=Image(isom2);
+      psi1:=Qrep.psi;
+      psi2:=CompositionMapping(isom2,isom1, psi1,InverseGeneralMapping(isom1),InverseGeneralMapping(isom2));
+
+      Qrec:=rec(
+        G:=G2,
+        psi:=psi2,
+        ordFix:=Qrep.ordFix,
+        ordf:=Qrep.ordf,
+        isConnected:=Qrep.isConnected,
+        matrix:=(Qrep.Q).matrix
+      );
+
+      AppendTo(file_n, "# No.",i,"\n",Qrec,",\n");
 
       if Qrep.isAlex then
           countAlex:=countAlex+1;

@@ -1,0 +1,32 @@
+# 
+# computed by Jin Kosaka and Hirotake Kurihara 
+# using gap 4.12.2 
+# 
+GAQ_4 :=
+[
+# No.1
+rec(
+  G := Group( [ (1,2,3,4) ] ),
+  isConnected := false,
+  matrix := [ [ 1, 2, 3, 4 ], [ 1, 2, 3, 4 ], [ 1, 2, 3, 4 ], [ 1, 2, 3, 4 ] ],
+  ordFix := 4,
+  ordf := 1,
+  psi := GroupHomomorphismByImages( Group( [ (1,2,3,4) ] ), Group( [ (1,2,3,4) ] ), [ (1,2,3,4) ], [ (1,2,3,4) ] ) ),
+# No.2
+rec(
+  G := Group( [ (1,2,3,4) ] ),
+  isConnected := false,
+  matrix := [ [ 1, 4, 3, 2 ], [ 3, 2, 1, 4 ], [ 1, 4, 3, 2 ], [ 3, 2, 1, 4 ] ],
+  ordFix := 2,
+  ordf := 2,
+  psi := GroupHomomorphismByImages( Group( [ (1,2,3,4) ] ), Group( [ (1,2,3,4) ] ), [ (1,2,3,4) ], [ (1,4,3,2) ] ) ),
+# No.3
+rec(
+  G := Group( [ (1,2), (3,4) ] ),
+  isConnected := true,
+  matrix := [ [ 1, 3, 4, 2 ], [ 4, 2, 1, 3 ], [ 2, 4, 3, 1 ], [ 3, 1, 2, 4 ] ],
+  ordFix := 1,
+  ordf := 3,
+  psi := GroupHomomorphismByImages( Group( [ (1,2), (3,4) ] ), Group( [ (1,2), (3,4) ] ), [ (1,2), (3,4) ], [ (3,4), (1,2)(3,4) ] ) ),
+]; 
+### end of file ###
