@@ -433,7 +433,7 @@ file := JoinStringsWithSeparator(["GAQ.csv"],"");
 PrintTo(file);
 AppendTo(file, "n,#GAQ,#AQ,#Connected","\n");
 
-for n in [1..32] do
+for n in [1..127] do
     file_n := JoinStringsWithSeparator(["GAQ_",n],"");
     PrintTo(file_n);
     AppendTo(file_n, "# \n# computed by Jin Kosaka and Hirotake Kurihara \n# using gap 4.12.2 \n# \nGAQ_",n," :=\n[\n" );
