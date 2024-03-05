@@ -27,7 +27,6 @@ GeneralizedAlexanderQuandle := function(group, automorphism)
     ordFix := Size(Fix),
     idP := IdGroup(P),
     isAlex := false,
-    isConnected:=false
   );
 end;
 
@@ -52,17 +51,14 @@ AlexanderQuandleList := function(n)
                   if nn < n then
                     GL:=AllSmallGroups(n, IsAbelian);
                     for G in GL do
+
+                      # Check if G cotains CORE as a subgroup
                       SubG:=List(ConjugacyClassesSubgroups(G),Representative);
-                      flag2:=0;
-                      for H in SubG do
-                          if IdGroup(H) = idCORE then
-                              flag2:=1;
-                              break;
-                          fi;
-                      od;
-                      if flag2=0 then
+                      if ForAny( SubG, H -> IdGroup(H) = idCORE) = false then
                           continue;
                       fi;
+
+                      # Find psi such that h\circ f = psi|_P \circ h
                       AG := AutomorphismGroup(G);
                       AGr := List(ConjugacyClasses(AG), Representative);
                       for psi in AGr do
@@ -70,10 +66,10 @@ AlexanderQuandleList := function(n)
                           Q := GeneralizedAlexanderQuandle(G, psi);
                           PG := Q.P;
                           idPG := IdGroup(PG);
-                          if idCORE = idPG then
+                          if (idCORE = idPG) and (Order(psi) mod Order(f) = 0) then
                               h0 := IsomorphismGroups(CORE, PG);
                               for aut in AutomorphismGroup(PG) do
-                                  h := CompositionMapping2(aut, h0);
+                                  h := CompositionMapping2(aut,h0);
                                   for x in CORE do
                                       if h(f(x)) <> psi(h(x)) then
                                           h := fail;
@@ -94,6 +90,7 @@ AlexanderQuandleList := function(n)
                       if flag = 1 then
                           break;
                       fi;
+                      
                     od;
                   else
                       Add(RESULT, QCORE);
@@ -113,9 +110,6 @@ AllGaq := function(n)
 
   for Q in AlexanderQuandleList(n) do
     Q.isAlex := true;
-    if IdGroup(Q.G)=IdGroup(Q.P) then
-        Q.isConnected:=true;
-    fi;
     Q.id := id; 
     id := id + 1;
     Add(ret, Q);
@@ -126,9 +120,6 @@ AllGaq := function(n)
     for CC in ConjugacyClasses(AutG) do
       psi := Representative(CC);
       gaq := GeneralizedAlexanderQuandle(G,psi);
-      if IdGroup(gaq.G)=IdGroup(gaq.P) then
-        gaq.isConnected:=true;
-      fi;
       gaq.id := id; 
       id := id + 1;
       Add(ret, gaq);
@@ -442,7 +433,7 @@ file := JoinStringsWithSeparator(["GAQ.csv"],"");
 PrintTo(file);
 AppendTo(file, "n,#GAQ,#AQ,#Connected","\n");
 
-for n in [1..10] do
+for n in [1..32] do
     file_n := JoinStringsWithSeparator(["GAQ_",n],"");
     PrintTo(file_n);
     AppendTo(file_n, "# \n# computed by Jin Kosaka and Hirotake Kurihara \n# using gap 4.12.2 \n# \nGAQ_",n," :=\n[\n" );
@@ -463,12 +454,16 @@ for n in [1..10] do
       psi1:=Qrep.psi;
       psi2:=CompositionMapping(isom2,isom1, psi1,InverseGeneralMapping(isom1),InverseGeneralMapping(isom2));
 
+      iC:=false;
+      if IdGroup(Qrep.G)=IdGroup(Qrep.P) then
+          iC:=true;
+      fi;
       Qrec:=rec(
         G:=G2,
         psi:=psi2,
         ordFix:=Qrep.ordFix,
         ordf:=Qrep.ordf,
-        isConnected:=Qrep.isConnected,
+        isConnected:=iC,
         matrix:=(Qrep.Q).matrix
       );
 
@@ -477,7 +472,7 @@ for n in [1..10] do
       if Qrep.isAlex then
           countAlex:=countAlex+1;
       fi;
-      if Qrep.isConnected then
+      if iC then
           countconnected:=countconnected+1;
       fi;
     od;
@@ -485,4 +480,3 @@ for n in [1..10] do
     Print(n,",", Size(IsomClasses_ord),",",countAlex,",",countconnected,"\n");
     AppendTo(file,n,",", Size(IsomClasses_ord),",",countAlex,",",countconnected,"\n");
 od;
-
