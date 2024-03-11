@@ -308,23 +308,10 @@ IsomorphismGaqs := function(Q1, Q2)
 
     A2 := FindBijection(ka_list);
     if A2 = fail then continue; fi;
-
-    # If a bijection k is obtained, construct f : Q1 -> Q2
-    ret := [1..Size(Q1)]*0;
-    for i in [1..Size(A1)] do
-      i_ := Position(elems1, A1[i]);
-      j_ := Position(elems2, A2[i]);
-      ret[i_] := j_;
-    od;
-    for p in Q1.P do
-      i_ := Position(elems1, p);
-      j_ := Position(elems2, h(p));
-      ret[i_] := j_;
-    od;
-
-    # If f is a quandle isomorphism, return f
-    if ExtendMorphism(Q1.Q, Q2.Q, ret) = fail then continue; fi;
-    return PermList(ret);
+    
+    # If a bijection k and group isomorphism h are exists then return true.
+    if A2 <> fail then return true; fi;
+    
   od;
   # If a quandle isomorphism f is not found in the above search, return false
   return false;
@@ -454,16 +441,16 @@ for n in [1..127] do
       psi1:=Qrep.psi;
       psi2:=CompositionMapping(isom2,isom1, psi1,InverseGeneralMapping(isom1),InverseGeneralMapping(isom2));
 
-      iC:=false;
+      IsCon:=false;
       if IdGroup(Qrep.G)=IdGroup(Qrep.P) then
-          iC:=true;
+          IsCon:=true;
       fi;
       Qrec:=rec(
         G:=G2,
         psi:=psi2,
         ordFix:=Qrep.ordFix,
         ordf:=Qrep.ordf,
-        isConnected:=iC,
+        isConnected:=IsCon,
         matrix:=(Qrep.Q).matrix
       );
 
@@ -472,7 +459,7 @@ for n in [1..127] do
       if Qrep.isAlex then
           countAlex:=countAlex+1;
       fi;
-      if iC then
+      if IsCon then
           countconnected:=countconnected+1;
       fi;
     od;
